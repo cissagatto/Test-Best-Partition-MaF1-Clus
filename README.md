@@ -1,6 +1,8 @@
 # Test the Best Partition with Clus
 This code is part of my PhD research at PPG-CC/DC/UFSCar. The aim is test the best partition for multilabel classification using Clus classifier.
 
+**IMPORTANT!! PLEASE READ BEFORE RUNNING: All of my experiments use the validation, train and set test. But, in this version the code the train and validation sets are joint to build the model. This code was implemented thinking of that situation. Please, pay attention to this. You need to generated these sets when runing the multi-label cross-validation code.**
+
 <img src="" width="500">
 
 ## Scripts
