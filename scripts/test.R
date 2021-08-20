@@ -124,10 +124,15 @@ cat("\nTBPC \t nome: ", dataset_name)
 ##################################################################################################
 #cat("\n\nCopy FROM google drive \n")
 #destino = paste(FolderRoot, "/datasets/", dataset_name, sep="")
-#origem = paste("cloud:/Datasets/CrossValidation_WithValidation/", dataset_name, sep="")
+#origem = paste("cloud:Datasets/CrossValidation_WithValidation/", dataset_name, sep="")
 #comando = paste("rclone -v copy ", origem, " ", destino, sep="")
-#cat("\n", comando, "\n\n")
-#print(system(comando))
+#cat("\n", comando, "\n") 
+#a = print(system(comando))
+#a = as.numeric(a)
+#if(a != 0) {
+#stop("Erro RCLONE")
+#quit("yes")
+#}
 
 
 ##################################################################################################
@@ -156,8 +161,13 @@ diretorios <- directories(dataset_name, folderResults)
 #destino = paste(diretorios$folderBestPartitions, "/", dataset_name, sep="")
 #origem = paste("cloud:[2021]ResultadosExperimentos/Best-Partitions/HPML-J/Macro-F1/", dataset_name, sep="")
 #comando1 = paste("rclone -v copy ", origem, " ", destino, sep="")
-#cat("\n", comando1, "\n\n")
-#print(system(comando1))
+#cat("\n", comando1, "\n") 
+#a = print(system(comando1))
+#a = as.numeric(a)
+#if(a != 0) {
+#stop("Erro RCLONE")
+#quit("yes")
+#}
 
 
 ##################################################################################################
@@ -218,8 +228,13 @@ print(system(str4))
 #cat("\n Copy Results to google drive")
 #destino = paste("cloud:[2021]ResultadosExperimentos/Test-Best-Partitions/HPML-J/Macro-F1/", dataset_name, sep="")
 #comando3 = paste("rclone -v copy ", Folder, " ", destino, sep="")
-#cat("\n", comando3, "\n\n")
-#print(system(comando3))
+#cat("\n", comando3, "\n") 
+#a = print(system(comando3))
+#a = as.numeric(a)
+#if(a != 0) {
+#stop("Erro RCLONE")
+#quit("yes")
+#}
 
 
 ##################################################################################################
