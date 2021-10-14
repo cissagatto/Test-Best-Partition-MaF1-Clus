@@ -1,6 +1,9 @@
 # Test the Best Partition with Clus
 This code is part of my PhD research at PPG-CC/DC/UFSCar. The aim is test the best partition for multilabel classification using Clus classifier.
 
+## How to cite 
+@misc{Gatto2021, author = {Gatto, E. C.}, title = {Test the Best Partition selected using Macro-F1 version 1}, year = {2021}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/Test-Best-Parition-MacroF1-TVT}}}
+
 **IMPORTANT!! PLEASE READ BEFORE RUNNING: All of my experiments use the validation, train and set test. But, in this version the code the train and validation sets are joint to build the model. This code was implemented thinking of that situation. Please, pay attention to this. You need to generated these sets when runing the multi-label cross-validation code.**
 
 <img src="" width="500">
