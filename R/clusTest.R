@@ -1,40 +1,30 @@
-##################################################################################################
-# Test the Best Partition with CLUS                                                              #
-# Copyright (C) 2021                                                                             #
-# VERSION WITH TRAIN PLUS VALIDATION                                                             #
-#                                                                                                #
-# This code is free software: you can redistribute it and/or modify it under the terms of the    #
-# GNU General Public License as published by the Free Software Foundation, either version 3 of   #
-# the License, or (at your option) any later version. This code is distributed in the hope       #
-# that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
-# more details.                                                                                  #
-#                                                                                                #
-# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri Ferrandin                     #
-# Federal University of Sao Carlos (UFSCar: https://www2.ufscar.br/) Campus Sao Carlos           #
-# Computer Department (DC: https://site.dc.ufscar.br/)                                           #
-# Program of Post Graduation in Computer Science (PPG-CC: http://ppgcc.dc.ufscar.br/)            #
-# Bioinformatics and Machine Learning Group (BIOMAL: http://www.biomal.ufscar.br/)               #
-#                                                                                                #
-##################################################################################################
-
-##################################################################################################
-# Script 1 - Libraries                                                                           #
-##################################################################################################
-
-##################################################################################################
-# Configures the workspace according to the operating system                                     #
-##################################################################################################
-sistema = c(Sys.info())
-FolderRoot = ""
-if (sistema[1] == "Linux"){
-  FolderRoot = paste("/home/", sistema[7], "/Test-Best-Partition-MacroF1-TVT", sep="")
-} else {
-  FolderRoot = paste("C:/Users/", sistema[7], "/Test-Best-Partition-MacroF1-TVT", sep="")
-}
-FolderScripts = paste(FolderRoot, "/scripts/", sep="")
+##############################################################################
+# TEST BEST PARTITION MACRO-F1 CLUS                                          #
+# Copyright (C) 2021                                                         #
+#                                                                            #
+# This code is free software: you can redistribute it and/or modify it under #
+# the terms of the GNU General Public License as published by the Free       #
+# Software Foundation, either version 3 of the License, or (at your option)  #
+# any later version. This code is distributed in the hope that it will be    #
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of     #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
+# Public License for more details.                                           #
+#                                                                            #
+# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
+# Ferrandin | Federal University of Sao Carlos                               #
+# (UFSCar: https://www2.ufscar.br/) Campus Sao Carlos | Computer Department  #
+# (DC: https://site.dc.ufscar.br/) | Program of Post Graduation in Computer  #
+# Science (PPG-CC: http://ppgcc.dc.ufscar.br/) | Bioinformatics and Machine  #
+# Learning Group (BIOMAL: http://www.biomal.ufscar.br/)                      #
+#                                                                            #
+##############################################################################
 
 
+###########################################################################
+#
+###########################################################################
+FolderRoot = "~/Test-Best-Partition-MaF1-Clus"
+FolderScripts = "~/Test-Best-Partition-MaF1-Clus/R"
 
 
 ##################################################################################################
@@ -44,47 +34,38 @@ FolderScripts = paste(FolderRoot, "/scripts/", sep="")
 #   Return                                                                                       #
 #     performance classifier                                                                     #
 ##################################################################################################
-buildAndTest <- function(number_dataset, number_cores, number_folds, dataset_name, ds, folderResults){
+buildAndTest <- function(ds,
+                         dataset_name,
+                         number_dataset, 
+                         number_cores, 
+                         number_folds,
+                         namesLabels,
+                         resLS,
+                         similarity,
+                         folderResults){
 
-  if(interactive()==TRUE){ flush.console() }
-
-  diretorios = directories(dataset_name, folderResults)
-
-  cat("\nFrom 1 to 10 folds!")
+  diretorios = directories(dataset_name, folderResults, similarity)
+  
   f = 1
   bthpkParalel <- foreach(f = 1:number_folds) %dopar%{
 
     cat("\nFold: ", f)
 
-    ############################################################################################################
-    # cat("\nLOAD LIBRARY \n")
-    library("stringr")
-    library("AggregateR")
-    library("plyr")
-    library("dplyr")
-    library("foreign")
+    FolderRoot = "~/Test-Best-Partition-MaF1-Clus"
+    FolderScripts = "~/Test-Best-Partition-MaF1-Clus/R"
 
-    ############################################################################################################
-    cat("\nLoad sources and packages")
-    sistema = c(Sys.info())
-    FolderRoot = ""
-    if (sistema[1] == "Linux"){
-      FolderRoot = paste("/home/", sistema[7], "/Test-Best-Partition-MacroF1-TVT", sep="")
-    } else {
-      FolderRoot = paste("C:/Users/", sistema[7], "/Test-Best-Partition-MacroF1-TVT", sep="")
-    }
-    FolderScripts = paste(FolderRoot, "/scripts/", sep="")
-
-
+    setwd(FolderScripts)
+    source("libraries.R")
+    
     setwd(FolderScripts)
     source("utils.R")
 
     ########################################################################################
     cat("\nSelect Best Partition for", f, "\n")
-    FolderBP = paste(diretorios$folderBestPartitions, "/", dataset_name, sep="")
+    FolderBP = paste(diretorios$folderPartitions, "/", dataset_name, sep="")
     setwd(FolderBP)
     # flags-best-macroF1-partitions.csv
-    bestPart = data.frame(read.csv(paste(dataset_name, "-best-macroF1-partitions.csv", sep="")))
+    bestPart = data.frame(read.csv(paste(dataset_name, "-best-microF1-partitions.csv", sep="")))
     bestPart2 = bestPart[f,]
     num.part = as.numeric(bestPart2$part)
 
@@ -155,9 +136,6 @@ buildAndTest <- function(number_dataset, number_cores, number_folds, dataset_nam
       n_c = ncol(classes_tr)
       grupo_tr = cbind(atributos_tr, classes_tr)
       fim_tr = ncol(grupo_tr)
-      ncol(grupo_tr)
-      nrow(grupo_tr)
-
       ######################################################################################################################
       cat("\nVALIDATION: Mount Group ", k, "\n")
       atributos_vl = arquivo_vl[ds$AttStart:ds$AttEnd]
@@ -384,7 +362,7 @@ buildAndTest <- function(number_dataset, number_cores, number_folds, dataset_nam
       quatro = paste(dataset_name, "-split-ts-", f, "-group-", k, ".arff", sep="")
       cinco = paste(dataset_name, "-split-tr-", f, "-group-", k, ".csv", sep="")
       seis = paste(dataset_name, "-split-ts-", f, "-group-", k, ".csv", sep="")
-      sete = paste(dataset_name, "-split-", f, "-group-", k, ".out", sep="")
+      #sete = paste(dataset_name, "-split-", f, "-group-", k, ".out", sep="")
 
       setwd(FolderTestGroup)
       unlink(um, recursive = TRUE)
@@ -393,7 +371,7 @@ buildAndTest <- function(number_dataset, number_cores, number_folds, dataset_nam
       unlink(quatro, recursive = TRUE)
       unlink(cinco, recursive = TRUE)
       unlink(seis, recursive = TRUE)
-      unlink(sete, recursive = TRUE)
+      #unlink(sete, recursive = TRUE)
 
       k = k + 1
       gc()
@@ -425,18 +403,35 @@ buildAndTest <- function(number_dataset, number_cores, number_folds, dataset_nam
 #   Return                                                                                       #
 #       true labels and predict labels                                                           #
 ##################################################################################################
-juntaResultadosTEST <- function(number_folds, dataset_name, ds, folderResults){
+juntaResultadosTEST <- function(ds,
+                                dataset_name,
+                                number_dataset, 
+                                number_cores, 
+                                number_folds,
+                                namesLabels,
+                                resLS,
+                                similarity,
+                                folderResults){
 
   retorno = list()
 
-  diretorios = directories(dataset_name, folderResults)
+  diretorios = directories(dataset_name, folderResults, similarity)
 
   # start build partitions
   # do fold 1 até o último fold
   f = 1
   gatherR <- foreach(f = 1:number_folds) %dopar%{
-
-    cat("\n\nFold: ", f)
+    
+    cat("\nFold: ", f)
+    
+    FolderRoot = "~/Test-Best-Partition-MaF1-Clus"
+    FolderScripts = "~/Test-Best-Partition-MaF1-Clus/R"
+    
+    setwd(FolderScripts)
+    source("libraries.R")
+    
+    setwd(FolderScripts)
+    source("utils.R")
 
     ########################################################################################
     apagar = c(0)
@@ -448,9 +443,9 @@ juntaResultadosTEST <- function(number_folds, dataset_name, ds, folderResults){
 
     ########################################################################################
     cat("\nSelect Best Partition for", f, "\n")
-    FolderBP = paste(diretorios$folderBestPartitions, "/", dataset_name, sep="")
+    FolderBP = paste(diretorios$folderPartitions, "/", dataset_name, sep="")
     setwd(FolderBP)
-    bestPart = data.frame(read.csv(paste(dataset_name, "-best-macroF1-partitions.csv", sep="")))
+    bestPart = data.frame(read.csv(paste(dataset_name, "-best-microF1-partitions.csv", sep="")))
     bestPart2 = bestPart[f,]
     num.part = as.numeric(bestPart2$part)
 
@@ -529,20 +524,34 @@ juntaResultadosTEST <- function(number_folds, dataset_name, ds, folderResults){
 #   Return                                                                                       #
 #       Assessment measures for each hybrid partition                                            #
 ##################################################################################################
-avaliaTest <- function(number_folds, dataset_name, ds, folderResults){
+avaliaTest <- function(ds,
+                       dataset_name,
+                       number_dataset, 
+                       number_cores, 
+                       number_folds,
+                       namesLabels,
+                       resLS,
+                       similarity,
+                       folderResults){
 
   retorno = list()
 
-  diretorios = directories(dataset_name, folderResults)
+  diretorios = directories(dataset_name, folderResults, similarity)
 
   # from fold = 1 to number_folder
   f = 1
   avalParal <- foreach(f = 1:number_folds) %dopar%{
-
-    library("mldr")
-    library("utiml")
-
+    
     cat("\nFold: ", f)
+    
+    FolderRoot = "~/Test-Best-Partition-MaF1-Clus"
+    FolderScripts = "~/Test-Best-Partition-MaF1-Clus/R"
+    
+    setwd(FolderScripts)
+    source("libraries.R")
+    
+    setwd(FolderScripts)
+    source("utils.R")
 
     # data frame
     apagar = c(0)
@@ -613,9 +622,17 @@ avaliaTest <- function(number_folds, dataset_name, ds, folderResults){
 #   Return                                                                                       #
 #       Assessment measures for all folds                                                        #
 ##################################################################################################
-juntaAvaliacoesTest <- function(number_folds, dataset_name, ds, folderResults){
+juntaAvaliacoesTest <- function(ds,
+                                dataset_name,
+                                number_dataset, 
+                                number_cores, 
+                                number_folds,
+                                namesLabels,
+                                resLS,
+                                similarity,
+                                folderResults){
 
-  diretorios = directories(dataset_name, folderResults)
+  diretorios = directories(dataset_name, folderResults, similarity)
 
   # vector with names
   measures = c("accuracy","average-precision","clp","coverage","F1","hamming-loss","macro-AUC",
@@ -646,9 +663,6 @@ juntaAvaliacoesTest <- function(number_folds, dataset_name, ds, folderResults){
     avaliado4 = cbind(avaliado4, avaliado3)
     nomesFolds[f] = paste("Fold-", f, sep="")
 
-    setwd(FolderSplitTest)
-    #unlink(str, recursive = TRUE)
-
     f = f + 1
     gc()
 
@@ -667,12 +681,8 @@ juntaAvaliacoesTest <- function(number_folds, dataset_name, ds, folderResults){
   write.csv(avaliado4, nome3, row.names = FALSE)
   nome4 = paste(dataset_name, "-Mean-10-Folds.csv", sep="")
   write.csv(media, nome4)
-
-  Folder = paste(diretorios$folderDatasetResults, "/", dataset_name, sep="")
-  if(dir.exists(Folder)==FALSE){
-    dir.create(Folder)
-  }
-  setwd(Folder)
+  
+  setwd(diretorios$folderRS)
   write.csv(avaliado4, nome3, row.names = FALSE)
   write.csv(media, nome4)
 
@@ -683,57 +693,6 @@ juntaAvaliacoesTest <- function(number_folds, dataset_name, ds, folderResults){
   cat("\n\n\n\n")
 }
 
-testPartition <- function(number_dataset, number_cores, number_folds, dataset_name, ds, folderResults){
-
-  diretorios = directories(dataset_name, folderResults)
-
-  cat("\n\n################################################################################################")
-  cat("\n# RUN TEST: build and test partitions                                                            #")
-  timeBuild = system.time(resTHP <- buildAndTest(number_dataset, number_cores, number_folds, dataset_name, ds, folderResults))
-  cat("\n##################################################################################################\n\n")
-
-  cat("\n\n################################################################################################")
-  cat("\n# RUN TEST: Matrix Confusion                                                                     #")
-  timeSplit = system.time(resGather <- juntaResultadosTEST(number_folds, dataset_name, ds, folderResults))
-  cat("\n##################################################################################################\n\n")
-
-  cat("\n\n################################################################################################")
-  cat("\n# RUN TEST: Evaluation Fold                                                                      #")
-  timeAvalia = system.time(resEval <- avaliaTest(number_folds, dataset_name, ds, folderResults))
-  cat("\n##################################################################################################\n\n")
-
-  cat("\n\n################################################################################################")
-  cat("\n# RUN TEST: Gather Evaluation                                                                    #")
-  timeGather = system.time(resGE <- juntaAvaliacoesTest(number_folds, dataset_name, ds, folderResults))
-  cat("\n##################################################################################################\n\n")
-
-  cat("\n\n################################################################################################")
-  cat("\n# RUN TEST: Save Runtime                                                                         #")
-  Runtime = rbind(timeBuild, timeSplit, timeAvalia, timeGather)
-
-  Folder = paste(diretorios$folderDatasetResults, "/", dataset_name, sep="")
-  if(dir.exists(Folder)==FALSE){
-    dir.create(Folder)
-  }
-
-  setwd(diretorios$folderResultsDataset)
-  write.csv(Runtime, paste(dataset_name, "-test-Partition-Runtime.csv", sep=""), row.names = FALSE)
-
-  setwd(Folder)
-  write.csv(Runtime, paste(dataset_name, "-test-Partition-Runtime.csv", sep=""), row.names = FALSE)
-
-  cat("\n##################################################################################################\n\n")
-
-  gc()
-  cat("\n##################################################################################################")
-  cat("\n# END OF TEST PARTITION                                                                          #")
-  cat("\n##################################################################################################")
-  cat("\n\n\n\n")
-
-  if(interactive()==TRUE){ flush.console() }
-  gc()
-
-}
 
 
 ##################################################################################################
