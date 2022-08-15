@@ -1,9 +1,9 @@
 Config, Value
 Dataset_Path, ~/Test-Best-Partition-MaF1-Clus/Datasets
-Temporary_Path, /dev/shm/j-t-GpositiveGO
+Temporary_Path, /dev/shm/jt-GpositiveGO
 Partitions_Path, ~/Test-Best-Partition-MaF1-Clus/BestPartitions/jaccard
 similarity, jaccard
 dataset_name, GpositiveGO
-number_dataset, 42
+number_dataset, 41
 number_folds, 10
-number_cores, 1
+number_cores, 10
